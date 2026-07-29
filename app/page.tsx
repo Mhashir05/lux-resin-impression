@@ -1,4 +1,5 @@
 import { ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import Button from "../components/Button";
 import ExclusiveCarousel from "../components/ExclusiveCarousel";
 import Footer from "../components/Footer";
@@ -46,9 +47,7 @@ export default function Home() {
               Crafted beyond seasons. Designed for a lifetime.
 Every piece is handcrafted with precision to preserve its beauty for years to come.
             </p>
-            <button className="mt-8 text-sm text-[#B8933E] border-b border-transparent transition-all duration-300 hover:text-[#9C6B4A] hover:border-[#9C6B4A] cursor-pointer">
-              Read our story →
-            </button>
+            <Link href="/about"><TextLink>Read our story →</TextLink></Link>
           </div>
           <div className="h-80 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-300 text-sm">
             LIFESTYLE — HANDS AT WORK

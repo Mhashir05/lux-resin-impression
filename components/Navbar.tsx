@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const navLinks = [
   { name: "Jewellery", href: "/products" },
@@ -13,6 +14,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,15 +38,25 @@ export default function Navbar() {
 
         {/* Links */}
         <div className="hidden md:flex items-center gap-8 text-sm text-gray-600">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="cursor-pointer transition-colors duration-300 hover:text-[#B8933E]"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return isActive ? (
+              <span
+                key={link.name}
+                className="text-[#B8933E] cursor-default"
+              >
+                {link.name}
+              </span>
+            ) : (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="cursor-pointer transition-colors duration-300 hover:text-[#B8933E]"
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Cart */}
