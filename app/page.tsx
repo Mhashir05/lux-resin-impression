@@ -1,8 +1,9 @@
 import { ShoppingBag } from "lucide-react";
 import Button from "../components/Button";
-import TextLink from "../components/TextLink";
-import Footer from "../components/Footer";
 import ExclusiveCarousel from "../components/ExclusiveCarousel";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import TextLink from "../components/TextLink";
 const featuredProducts = [
   { name: "Pressed Flower Pendant", price: "2,750", availability: "Crafted to Order", image: "PENDANT" },
   { name: "Amber Drop Earrings", price: "1,800", availability: "In Stock", image: "EARRINGS" },
@@ -12,15 +13,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-        <div className="text-lg tracking-wide text-[#1D1D1F]">
-          Lux <span className="text-[#B8933E]">Resin</span> Impression
-        </div>
-        <div><button className="flex items-center gap-2 text-sm text-gray-500 border border-gray-200 px-4 py-2 rounded-full transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E] cursor-pointer">
-          <ShoppingBag size={16} />
-          Cart (0)
-        </button></div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-24">
