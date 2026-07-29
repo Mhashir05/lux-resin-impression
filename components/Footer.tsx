@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { ArrowUp, ArrowUpRight, MapPin } from "lucide-react";
 import Link from "next/link";
-import { MapPin, ArrowUpRight, ArrowUp } from "lucide-react";
-import { FaWhatsapp, FaInstagram } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 import WhiteButton from "./WhiteButton";
 
 const shopLinks = [
-  { name: "Jewellery", href: "/products" },
-  { name: "Resin Art", href: "/products" },
+  { name: "Jewellery", href: "/jewellery" },
+  { name: "Resin Art", href: "/resin-art" },
   { name: "Custom Order", href: "/custom-order" },
   { name: "About", href: "/about" },
 ];
