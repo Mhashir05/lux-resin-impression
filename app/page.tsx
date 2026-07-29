@@ -29,7 +29,7 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex gap-4">
-          <Button variant="primary">Shop the collection</Button>
+          <Link href="/products"><Button variant="primary">Shop the collection</Button></Link>
           
         </div>
       </section>
@@ -100,9 +100,9 @@ Every piece is handcrafted with precision to preserve its beauty for years to co
               <p className="text-sm text-gray-500 mt-2 max-w-xs">
                 Earrings, pendants, bangles and rings set with pressed flowers and gold leaf.
               </p>
-              <span className="inline-block mt-4 text-sm text-[#B8933E] transition-all duration-300 group-hover:text-[#9C6B4A]">
-              <TextLink>Explore jewellery →</TextLink>
-              </span>
+              <Link href="/jewellery" className="inline-block mt-4">
+                <TextLink>Explore jewellery →</TextLink>
+              </Link>
             </div>
           </div>
 
@@ -116,9 +116,9 @@ Every piece is handcrafted with precision to preserve its beauty for years to co
               <p className="text-sm text-gray-500 mt-2 max-w-xs">
                 Trays, coasters, wall pieces and keepsakes cast to order for your home.
               </p>
-              <span className="inline-block mt-4 text-sm text-[#B8933E] transition-all duration-300 group-hover:text-[#9C6B4A]">
-              <TextLink>Explore resin art →</TextLink>
-              </span>
+              <Link href="/resin-art" className="inline-block mt-4">
+                <TextLink>Explore resin art →</TextLink>
+              </Link>
             </div>
           </div>
         </div>
