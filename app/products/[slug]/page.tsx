@@ -4,6 +4,7 @@ import { useState, use } from "react";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import { products } from "../../../data/products";
+import { useCart } from "../../../context/CartContext";
 import { ShoppingBag } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -14,6 +15,7 @@ export default function ProductDetailPage({
 }) {
   const { slug } = use(params);
   const product = products.find((p) => p.slug === slug);
+  const { addToCart } = useCart();
 
   const [activeImage, setActiveImage] = useState(0);
 
@@ -89,7 +91,17 @@ export default function ProductDetailPage({
 
             {/* Buttons */}
             <div className="mt-8 space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]">
+              <button
+                onClick={() =>
+                  addToCart({
+                    slug: product.slug,
+                    name: product.name,
+                    price: product.price,
+                    image: product.images[0],
+                  })
+                }
+                className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]"
+              >
                 <ShoppingBag size={16} />
                 Add to cart
               </button>

@@ -4,6 +4,7 @@ import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
 
 const navLinks = [
   { name: "Jewellery", href: "/jewellery" },
@@ -14,6 +15,7 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { totalItems } = useCart();
   const pathname = usePathname();
 
   // Close menu on page change
@@ -53,7 +55,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <button className="flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]">
             <ShoppingBag size={16} />
-            <span className="hidden sm:inline">Cart (0)</span>
+            <span className="hidden sm:inline">Cart ({totalItems})</span>
           </button>
 
           <button

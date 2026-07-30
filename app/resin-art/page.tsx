@@ -1,3 +1,6 @@
+"use client";
+
+import { useCart } from "../../context/CartContext";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Link from "next/link";
@@ -5,6 +8,7 @@ import { products } from "../../data/products";
 import { ShoppingBag } from "lucide-react";
 
 export default function ResinArtPage() {
+  const { addToCart } = useCart();
   const resinArt = products.filter((p) => p.category === "Resin Art");
 
   return (
@@ -36,7 +40,17 @@ export default function ResinArtPage() {
               <span className="inline-block mt-2 mb-4 text-xs text-[#B8933E] border border-[#B8933E]/30 rounded-full px-3 py-1">
                 {product.availability}
               </span>
-              <button className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-2.5 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]">
+              <button
+                onClick={() =>
+                  addToCart({
+                    slug: product.slug,
+                    name: product.name,
+                    price: product.price,
+                    image: product.images[0],
+                  })
+                }
+                className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-2.5 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]"
+              >
                 <ShoppingBag size={15} />
                 Add to cart
               </button>
