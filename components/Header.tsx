@@ -55,9 +55,16 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <Link
             href="/cart"
-            className="flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]"
+            className="relative flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]"
           >
-            <ShoppingBag size={16} />
+            <div className="relative">
+              <ShoppingBag size={16} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#B8933E] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </div>
             <span className="hidden sm:inline">Cart ({totalItems})</span>
           </Link>
 
