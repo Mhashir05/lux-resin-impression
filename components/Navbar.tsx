@@ -1,9 +1,9 @@
 "use client";
 
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 const navLinks = [
@@ -14,13 +14,13 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { totalItems } = useCart();
   const [show, setShow] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { totalItems } = useCart();
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setShow(window.scrollY > 80);
+    const handleScroll = () => setShow(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -32,7 +32,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-200 ${
         show ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       }`}
     >
@@ -62,8 +62,9 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Right side: Cart (desktop) + Hamburger (mobile) */}
-        <Link
+        {/* Right: cart + hamburger */}
+        <div className="flex items-center gap-3">
+          <Link
             href="/cart"
             className="relative flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]"
           >
@@ -78,7 +79,6 @@ export default function Navbar() {
             <span className="hidden sm:inline">Cart ({totalItems})</span>
           </Link>
 
-          {/* Hamburger button — mobile only */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden flex items-center justify-center w-10 h-10 text-[#1D1D1F] cursor-pointer"
@@ -112,7 +112,6 @@ export default function Navbar() {
               </Link>
             );
           })}
-          
         </div>
       </div>
     </nav>
