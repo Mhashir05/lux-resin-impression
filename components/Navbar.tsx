@@ -64,10 +64,13 @@ export default function Navbar() {
 
         {/* Right side: Cart (desktop) + Hamburger (mobile) */}
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]">
+          <Link
+            href="/cart"
+            className="flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:text-white hover:border-[#B8933E]"
+          >
             <ShoppingBag size={16} />
             <span className="hidden sm:inline">Cart ({totalItems})</span>
-          </button>
+          </Link>
 
           {/* Hamburger button — mobile only */}
           <button
