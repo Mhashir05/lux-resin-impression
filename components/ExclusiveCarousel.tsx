@@ -3,14 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { products } from "../data/products";
 import WhiteButton from "./WhiteButton";
 
-const exclusiveProducts = [
-  { name: "Midnight Bloom Pendant", tagline: "Real orchids, suspended in clear resin", price: "4,500", tag: "EXCLUSIVE", image: "MIDNIGHT BLOOM" },
-  { name: "Golden Wave Bangle", tagline: "Hand-poured with 24k gold leaf", price: "6,800", tag: "LIMITED EDITION", image: "GOLDEN WAVE" },
-  { name: "Ocean Memory Frame", tagline: "A keepsake, cast to preserve your moment", price: "9,200", tag: "SIGNATURE", image: "OCEAN MEMORY" },
-];
-
+const exclusiveProducts = products.filter((p) =>
+  ["floral-keepsake-frame", "geode-wall-piece", "pressed-flower-pendant"].includes(p.slug)
+);
 export default function ExclusiveCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -46,20 +45,24 @@ export default function ExclusiveCarousel() {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {exclusiveProducts.map((product) => (
-            <div key={product.name} className="flex-[0_0_70%] min-w-0 px-3">
+            <div key={product.slug} className="flex-[0_0_70%] min-w-0 px-3">
               <div className="relative h-96 rounded-3xl overflow-hidden bg-[#1D1D1F] flex items-end p-10">
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-gray-600 text-sm">
-                  {product.image}
+                <div className="absolute inset-0 flex items-center justify-center text-gray-600 text-sm">
+                  {product.images[0]}
                 </div>
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)" }} />
                 <div className="relative z-10 text-white max-w-md">
-                  <p className="text-xs tracking-[0.2em] text-[#B8933E] mb-3">{product.tag}</p>
+                  <p className="text-xs tracking-[0.2em] text-[#B8933E] mb-3">
+                    {product.category.toUpperCase()}
+                  </p>
                   <h3 className="text-2xl md:text-3xl font-bold">{product.name}</h3>
-                  <p className="text-sm text-gray-300 mt-2 mb-1">{product.tagline}</p>
+                  <p className="text-sm text-gray-300 mt-2 line-clamp-2">{product.description}</p>
                   <p className="text-xl font-light mt-4 mb-1">PKR {product.price}</p>
-                  <WhiteButton>
-                    Order now <ArrowRight size={16} />
-                  </WhiteButton>
+                  <Link href={`/products/${product.slug}`}>
+                    <WhiteButton>
+                      View piece <ArrowRight size={16} />
+                    </WhiteButton>
+                  </Link>
                 </div>
               </div>
             </div>

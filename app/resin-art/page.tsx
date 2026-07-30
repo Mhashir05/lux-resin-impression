@@ -1,15 +1,12 @@
-import { ShoppingBag } from "lucide-react";
-import Footer from "../../components/Footer";
 import Header from "../../components/Header";
-
-const products = [
-  { name: "Ocean Resin Tray", price: "3,500", availability: "Crafted to Order", image: "TRAY" },
-  { name: "Marble Coaster Set", price: "2,400", availability: "In Stock", image: "COASTERS" },
-  { name: "Geode Wall Piece", price: "12,000", availability: "Crafted to Order", image: "WALL ART" },
-  { name: "Floral Keepsake Frame", price: "6,800", availability: "Crafted to Order", image: "FRAME" },
-];
+import Footer from "../../components/Footer";
+import Link from "next/link";
+import { products } from "../../data/products";
+import { ShoppingBag } from "lucide-react";
 
 export default function ResinArtPage() {
+  const resinArt = products.filter((p) => p.category === "Resin Art");
+
   return (
     <main className="min-h-screen bg-white">
       <Header />
@@ -23,12 +20,18 @@ export default function ResinArtPage() {
       </section>
       <section className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <div key={product.name} className="border border-gray-100 rounded-2xl p-4 transition-shadow duration-300 hover:shadow-md">
-              <div className="aspect-square bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-gray-300 text-xs">
-                {product.image}
-              </div>
-              <h3 className="text-sm text-[#1D1D1F]">{product.name}</h3>
+          {resinArt.map((product) => (
+            <div key={product.slug} className="border border-gray-100 rounded-2xl p-4 transition-shadow duration-300 hover:shadow-md">
+              <Link href={`/products/${product.slug}`}>
+                <div className="aspect-square bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-gray-300 text-xs cursor-pointer">
+                  {product.images[0]}
+                </div>
+              </Link>
+              <Link href={`/products/${product.slug}`}>
+                <h3 className="text-sm text-[#1D1D1F] cursor-pointer hover:text-[#B8933E] transition-colors">
+                  {product.name}
+                </h3>
+              </Link>
               <p className="text-sm text-gray-500 mt-1">PKR {product.price}</p>
               <span className="inline-block mt-2 mb-4 text-xs text-[#B8933E] border border-[#B8933E]/30 rounded-full px-3 py-1">
                 {product.availability}
