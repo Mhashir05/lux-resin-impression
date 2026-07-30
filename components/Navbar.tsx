@@ -76,7 +76,6 @@ export default function Navbar() {
                 </span>
               )}
             </div>
-            <span className="hidden sm:inline">Cart ({totalItems})</span>
           </Link>
 
           <button

@@ -65,7 +65,6 @@ export default function Header() {
                 </span>
               )}
             </div>
-            <span className="hidden sm:inline">Cart ({totalItems})</span>
           </Link>
 
           <button
