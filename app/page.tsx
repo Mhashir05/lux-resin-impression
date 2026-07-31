@@ -65,7 +65,7 @@ Every piece is handcrafted with precision to preserve its beauty for years to co
             </h2>
             <div className="w-16 h-[2px] bg-[#B8933E] mt-3"></div>
           </div>
-          <TextLink>View all →</TextLink>
+          <TextLink href="/products">Catalog →</TextLink>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
