@@ -22,7 +22,7 @@ export default function Home() {
           Every Piece , Handcrafted to Perfection
         </p>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-[#1D1D1F] leading-tight">
-          Designed to <span className="text-[#B8933E]">Endure.</span> Admired <span className="text-[#B8933E]">forever</span>.
+          Designed to <span className="text-[#B8933E]">Endure ,</span> Admired <span className="text-[#B8933E]">forever</span>
         </h1>
         <p className="mt-6 text-gray-500 max-w-md">
           Lux jewellery and Resin art.

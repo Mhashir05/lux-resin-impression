@@ -25,14 +25,14 @@ export default function Header() {
 
   return (
     <header className="border-b border-gray-100">
-      <div className="flex items-center justify-between px-6 py-5 max-w-6xl mx-auto">
+      <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
         {/* Brand */}
-        <Link href="/" className="text-lg tracking-wide text-[#1D1D1F]">
+        <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
           Lux <span className="text-[#B8933E]">Resin</span> Impression
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-gray-600">
+        <div className="hidden md:flex items-center gap-8 text-[13px] text-gray-600">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return isActive ? (

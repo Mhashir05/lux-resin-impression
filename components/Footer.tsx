@@ -12,6 +12,14 @@ const shopLinks = [
   { name: "Custom Order", href: "/custom-order" },
   { name: "About", href: "/about" },
 ];
+const policyLinks = [
+  { name: "Terms of Service", href: "/policies#terms" },
+  { name: "Privacy Policy", href: "/policies#privacy" },
+  { name: "Shipping Policy", href: "/policies#shipping" },
+  { name: "Refund Policy", href: "/policies#refund" },
+];
+
+
 
 export default function Footer() {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
@@ -69,7 +77,7 @@ export default function Footer() {
       </div>
 
       {/* Main grid */}
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 pt-12">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-12 pt-12">
         {/* Brand + socials */}
         <div>
           <div className="text-lg tracking-wide mb-4">
@@ -105,6 +113,27 @@ export default function Footer() {
           <p className="text-xs tracking-[0.2em] text-[#E0B0A5] mb-4">SHOP</p>
           <ul className="space-y-3 text-sm text-gray-300">
             {shopLinks.map((link) => (
+              <li key={link.name}>
+                <Link
+                  href={link.href}
+                  className="group inline-flex items-center gap-1 cursor-pointer transition-all duration-300 hover:text-[#E0B0A5] hover:translate-x-1"
+                >
+                  {link.name}
+                  <ArrowUpRight
+                    size={14}
+                    className="opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Policy links */}
+        <div>
+          <p className="text-xs tracking-[0.2em] text-[#E0B0A5] mb-4">LEGAL</p>
+          <ul className="space-y-3 text-sm text-gray-300">
+            {policyLinks.map((link) => (
               <li key={link.name}>
                 <Link
                   href={link.href}

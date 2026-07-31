@@ -19,8 +19,10 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const pathname = usePathname();
 
+  if (pathname === "/policies") return null;
+
   useEffect(() => {
-    const handleScroll = () => setShow(window.scrollY > 40);
+    const handleScroll = () => setShow(window.scrollY > 80);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -32,18 +34,19 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 ${
         show ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       }`}
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+
         {/* Brand */}
-        <Link href="/" className="text-lg tracking-wide text-[#1D1D1F]">
+        <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
           Lux <span className="text-[#B8933E]">Resin</span> Impression
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-gray-600">
+        <div className="hidden md:flex items-center gap-8 text-[13px] text-gray-600">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return isActive ? (
