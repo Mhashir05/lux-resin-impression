@@ -1,15 +1,14 @@
-"use client";
 
-import { useCart } from "../../context/CartContext";
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Link from "next/link";
-import { products } from "../../data/products";
-import { ShoppingBag } from "lucide-react";
+import Header from "../../components/Header";
+import ProductsList from "../../components/ProductsList";
+import { prisma } from "../../lib/prisma";
 
-export default function ResinArtPage() {
-  const { addToCart } = useCart();
-  const resinArt = products.filter((p) => p.category === "Resin Art");
+export default async function ResinArtPage() {
+ const jewellery = await prisma.product.findMany({
+    where: { category: "Resin Art" },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <main className="min-h-screen bg-white">
@@ -22,42 +21,9 @@ export default function ResinArtPage() {
           Trays, coasters, wall pieces and keepsakes — cast to order for your home.
         </p>
       </section>
-      <section className="px-6 pb-24 max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {resinArt.map((product) => (
-            <div key={product.slug} className="border border-gray-100 rounded-2xl p-4 transition-shadow duration-300 hover:shadow-md">
-              <Link href={`/products/${product.slug}`}>
-                <div className="aspect-square bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-gray-300 text-xs cursor-pointer">
-                  {product.images[0]}
-                </div>
-              </Link>
-              <Link href={`/products/${product.slug}`}>
-                <h3 className="text-sm text-[#1D1D1F] cursor-pointer hover:text-[#B8933E] transition-colors">
-                  {product.name}
-                </h3>
-              </Link>
-              <p className="text-sm text-gray-500 mt-1">PKR {product.price}</p>
-              <span className="inline-block mt-2 mb-4 text-xs text-[#B8933E] border border-[#B8933E]/30 rounded-full px-3 py-1">
-                {product.availability}
-              </span>
-              <button
-                onClick={() =>
-                  addToCart({
-                    slug: product.slug,
-                    name: product.name,
-                    price: product.price,
-                    image: product.images[0],
-                  })
-                }
-                className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-2.5 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]"
-              >
-                <ShoppingBag size={15} />
-                Add to cart
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
+           <section className="px-6 pb-24 max-w-6xl mx-auto">
+             <ProductsList products={jewellery} />
+           </section>
       <Footer />
     </main>
   );
