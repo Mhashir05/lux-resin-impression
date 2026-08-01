@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 // What a cart item looks like
 export type CartItem = {
@@ -16,6 +16,7 @@ type CartContextType = {
   items: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">) => void;
   removeFromCart: (slug: string) => void;
+  clearCart: () => void;
   totalItems: number;
 };
 
@@ -41,11 +42,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const removeFromCart = (slug: string) => {
     setItems((prev) => prev.filter((i) => i.slug !== slug));
   };
+  const clearCart = () => {
+    setItems([]);
+  };
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, totalItems }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, clearCart, totalItems }}>
       {children}
     </CartContext.Provider>
   );

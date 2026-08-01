@@ -1,19 +1,68 @@
 "use client";
 
-import { useState } from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
 import { useCart } from "../../context/CartContext";
 
 export default function CheckoutPage() {
-  const { items } = useCart();
+  const { items, clearCart } = useCart();
+  const router = useRouter();
   const [payment, setPayment] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const totalPrice = items.reduce((sum, item) => {
     const priceNum = Number(item.price.replace(/,/g, ""));
     return sum + priceNum * item.quantity;
   }, 0);
+
+  const handlePlaceOrder = async () => {
+    // Basic validation
+    if (!name || !phone || !address) {
+      alert("Please fill in your name, phone and address.");
+      return;
+    }
+    if (!payment) {
+      alert("Please choose a payment method.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: name,
+          phone: phone,
+          address: address,
+          items: items,
+          totalAmount: totalPrice,
+          paymentMethod: payment,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        clearCart();
+        router.push("/order-confirmed");
+      } else {
+        alert("Something went wrong. Please try again.");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Could not place order. Please check your connection.");
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -45,16 +94,22 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     placeholder="Full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-gray-400 focus:outline-none focus:border-[#B8933E]"
                   />
                   <input
                     type="tel"
                     placeholder="WhatsApp number — +92 3XX XXXXXXX"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-gray-400 focus:outline-none focus:border-[#B8933E]"
                   />
                   <textarea
                     rows={3}
                     placeholder="Full delivery address — house, street, area, city"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1D1D1F] placeholder:text-gray-400 focus:outline-none focus:border-[#B8933E] resize-none"
                   />
                 </div>
@@ -153,8 +208,12 @@ export default function CheckoutPage() {
 
               {/* Place order */}
               <div className="space-y-3 pt-2">
-                <button className="w-full bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]">
-                  Place Order
+                <button
+                  onClick={handlePlaceOrder}
+                  disabled={loading}
+                  className="w-full bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Placing your order..." : "Place Order"}
                 </button>
                 <p className="text-xs text-gray-400 text-center">
                   By placing your order, you agree to confirm payment as described above.

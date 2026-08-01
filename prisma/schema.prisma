@@ -23,3 +23,15 @@ model Product {
   featured     Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
+
+model Order {
+  id            String   @id @default(uuid())
+  customerName  String
+  phone         String
+  address       String
+  items         Json
+  totalAmount   Int
+  paymentMethod String
+  status        String   @default("New")
+  createdAt     DateTime @default(now())
+}

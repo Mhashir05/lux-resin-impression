@@ -1,16 +1,18 @@
-import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import Button from "../components/Button";
 import ExclusiveCarousel from "../components/ExclusiveCarousel";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import ProductsList from "../components/ProductsList";
 import TextLink from "../components/TextLink";
-const featuredProducts = [
-  { name: "Pressed Flower Pendant", price: "2,750", availability: "Crafted to Order", image: "PENDANT" },
-  { name: "Amber Drop Earrings", price: "1,800", availability: "In Stock", image: "EARRINGS" },
-  { name: "Ocean Resin Ring", price: "950", availability: "Crafted to Order", image: "RING" },
-];
-export default function Home() {
+import { prisma } from "../lib/prisma";
+
+export default async function Home() {
+  const featuredProducts = await prisma.product.findMany({
+    where: { featured: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <main className="min-h-screen bg-white">
       {/* Header */}
@@ -65,27 +67,10 @@ Every piece is handcrafted with precision to preserve its beauty for years to co
             </h2>
             <div className="w-16 h-[2px] bg-[#B8933E] mt-3"></div>
           </div>
-          <TextLink href="/products">Catalog →</TextLink>
+          <TextLink href="/products">View Catalog →</TextLink>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {featuredProducts.map((product) => (
-            <div key={product.name} className="border border-gray-100 rounded-2xl p-4 transition-shadow duration-300 hover:shadow-md">
-              <div className="aspect-square bg-gray-100 rounded-xl mb-4 flex items-center justify-center text-gray-300 text-xs">
-                {product.image}
-              </div>
-              <h3 className="text-sm text-[#1D1D1F]">{product.name}</h3>
-              <p className="text-sm text-gray-500 mt-1">PKR {product.price}</p>
-              <span className="inline-block mt-2 mb-4 text-xs text-[#B8933E] border border-[#B8933E]/30 rounded-full px-3 py-1">
-                {product.availability}
-              </span>
-              <button className="w-full flex items-center justify-center gap-2 bg-[#1D1D1F] text-white text-sm py-2.5 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E]">
-                <ShoppingBag size={15} />
-                Add to cart
-              </button>
-            </div>
-          ))}
-        </div>
+        <ProductsList products={featuredProducts} />
       </section>
       {/* Category Doors */}
       <section className="px-6 py-24 max-w-6xl mx-auto">
