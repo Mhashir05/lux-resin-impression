@@ -1,5 +1,4 @@
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import ProductsList from "../../components/ProductsList";
 import { prisma } from "../../lib/prisma";
 
@@ -11,7 +10,6 @@ export default async function JewelleryPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
       <section className="px-6 pt-20 pb-10 max-w-6xl mx-auto text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-[#1D1D1F]">
           <span className="text-[#B8933E]">Jewellery</span> Collection

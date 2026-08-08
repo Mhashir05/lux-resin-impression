@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 export default function CustomOrderPage() {
@@ -9,7 +8,6 @@ export default function CustomOrderPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
 
       <section className="px-6 pt-20 pb-24 max-w-2xl mx-auto">
         {/* Heading */}

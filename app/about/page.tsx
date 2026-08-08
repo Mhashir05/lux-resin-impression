@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
+import Footer from "../../components/Footer";
 
 export const metadata: Metadata = {
   title: "About",
 };
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Header />
       {/* Hero / Story intro */}
       <section className="px-6 pt-32 pb-20 max-w-4xl mx-auto text-center">
         <p className="text-xs tracking-[0.25em] text-[#B8933E] mb-4">OUR STORY</p>

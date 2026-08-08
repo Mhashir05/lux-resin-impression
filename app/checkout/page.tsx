@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import { useCart } from "../../context/CartContext";
 
 export default function CheckoutPage() {
@@ -66,7 +65,6 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
 
       <section className="px-6 pt-16 pb-24 max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-[#1D1D1F] mb-8">

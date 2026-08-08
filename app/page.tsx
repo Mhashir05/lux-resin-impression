@@ -2,7 +2,6 @@ import Link from "next/link";
 import Button from "../components/Button";
 import ExclusiveCarousel from "../components/ExclusiveCarousel";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 import ProductsList from "../components/ProductsList";
 import TextLink from "../components/TextLink";
 import { prisma } from "../lib/prisma";
@@ -15,8 +14,6 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Header */}
-      <Header />
 
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-24">

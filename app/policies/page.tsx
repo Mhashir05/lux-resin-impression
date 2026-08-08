@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 
 export const metadata: Metadata = {
   title: "Policies",
@@ -16,7 +15,6 @@ const sections = [
 export default function PoliciesPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Header />
 
       {/* Hero intro */}
       <section className="px-6 pt-32 pb-16 max-w-4xl mx-auto text-center">

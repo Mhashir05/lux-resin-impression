@@ -1,12 +1,10 @@
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 
 export default function OrderConfirmedPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Header />
 
       <section className="px-6 py-32 max-w-2xl mx-auto text-center">
         <div className="flex justify-center mb-6">

@@ -1,10 +1,9 @@
 "use client";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import Link from "next/link";
-import { useCart } from "../../context/CartContext";
 import { Trash2 } from "lucide-react";
+import Link from "next/link";
+import Footer from "../../components/Footer";
+import { useCart } from "../../context/CartContext";
 
 export default function CartPage() {
   const { items, removeFromCart, totalItems } = useCart();
@@ -17,7 +16,6 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
 
       <section className="px-6 pt-16 pb-24 max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-[#1D1D1F] mb-8">
