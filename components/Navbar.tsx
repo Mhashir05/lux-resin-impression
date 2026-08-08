@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 
 const navLinks = [
@@ -14,38 +15,25 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const [show, setShow] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const pathname = usePathname();
 
-  if (pathname === "/policies") return null;
-
-  useEffect(() => {
-    const handleScroll = () => setShow(window.scrollY > 80);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Close mobile menu whenever the page changes
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
+  if (pathname === "/policies") return null;
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 ${
-        show ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
-      }`}
-    >
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
       <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+        <motion.div layoutId="brand">
+          <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
+            Lux <span className="text-[#B8933E]">Resin</span> Impression
+          </Link>
+        </motion.div>
 
-        {/* Brand */}
-        <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
-          Lux <span className="text-[#B8933E]">Resin</span> Impression
-        </Link>
-
-        {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8 text-[13px] text-gray-600">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -65,7 +53,6 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Right: cart + hamburger */}
         <div className="flex items-center gap-3">
           <Link
             href="/cart"
@@ -91,7 +78,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile dropdown menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${
           menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -116,6 +102,6 @@ export default function Navbar() {
           })}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
