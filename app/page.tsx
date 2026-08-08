@@ -2,6 +2,7 @@ import Link from "next/link";
 import Button from "../components/Button";
 import ExclusiveCarousel from "../components/ExclusiveCarousel";
 import Footer from "../components/Footer";
+import IntroSequence from "../components/IntroSequence";
 import ProductsList from "../components/ProductsList";
 import TextLink from "../components/TextLink";
 import { prisma } from "../lib/prisma";
@@ -14,6 +15,8 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
+      /* Intro Sequence */
+      <IntroSequence greeting="Welcome to Lux Resin Impresion" />
 
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-24">

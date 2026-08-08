@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,12 +27,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
       <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
-        <motion.div layoutId="brand">
-          <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
-            Lux <span className="text-[#B8933E]">Resin</span> Impression
-          </Link>
-        </motion.div>
-
+        <Link href="/" className="text-base tracking-wide text-[#1D1D1F]">
+          Lux <span className="text-[#B8933E]">Resin</span> Impression
+        </Link>
         <div className="hidden md:flex items-center gap-8 text-[13px] text-gray-600">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
