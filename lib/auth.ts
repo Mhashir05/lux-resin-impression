@@ -16,19 +16,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!email || !password) return null;
 
-        // Database se admin dhoondo
+        //  fetch Admin user from database 
         const admin = await prisma.adminUser.findUnique({
           where: { email },
         });
 
         if (!admin) return null;
 
-        // Password compare karo (hash ke saath)
+        // Password compare karo (with hash )
         const isValid = await bcrypt.compare(password, admin.passwordHash);
 
         if (!isValid) return null;
 
-        // Sab sahi — is admin ko login karne do
+        // admin user valid return karo with id and email
         return { id: admin.id, email: admin.email };
       },
     }),
