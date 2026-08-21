@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Footer from "../../../components/Footer";
-import Header from "../../../components/Header";
 import ProductDetail from "../../../components/ProductDetail";
 import { prisma } from "../../../lib/prisma";
 
