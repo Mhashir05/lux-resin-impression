@@ -20,7 +20,6 @@ export default async function ProductDetailPage({
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
       <section className="px-6 pt-16 pb-24 max-w-6xl mx-auto">
         <ProductDetail product={product} />
       </section>
