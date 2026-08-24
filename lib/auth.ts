@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const result = NextAuth({
   providers: [
     Credentials({
       credentials: {
@@ -16,19 +16,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!email || !password) return null;
 
-        //  fetch Admin user from database 
         const admin = await prisma.adminUser.findUnique({
           where: { email },
         });
 
         if (!admin) return null;
 
-        // Password compare karo (with hash )
         const isValid = await bcrypt.compare(password, admin.passwordHash);
 
         if (!isValid) return null;
 
-        // admin user valid return karo with id and email
         return { id: admin.id, email: admin.email };
       },
     }),
@@ -40,3 +37,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/admin/login",
   },
 });
+
+export const handlers = result.handlers;
+export const signIn = result.signIn;
+export const signOut = result.signOut;
+export const auth = result.auth;
