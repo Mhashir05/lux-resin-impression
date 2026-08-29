@@ -1,30 +1,29 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useCart } from "../context/CartContext";
 
-const navLinks = [
-  { name: "Jewellery", href: "/jewellery" },
-  { name: "Resin Art", href: "/resin-art" },
-  { name: "Custom Order", href: "/custom-order" },
-  { name: "About", href: "/about" },
+const adminLinks = [
+  { name: "Dashboard", href: "/admin" },
+  { name: "Products", href: "/admin/products" },
+  { name: "Orders", href: "/admin/orders" },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 type Phase = "enter" | "settled" | "expanding" | "revealing" | "complete";
 
-export default function Navbar() {
+export default function AdminNavbar() {
   const [phase, setPhase] = useState<Phase>("enter");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const { totalItems } = useCart();
   const pathname = usePathname();
+  if (pathname === "/admin/login") return null;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -53,8 +52,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (pathname === "/policies" || pathname.startsWith("/admin")) return null;
-
   const expanded = reducedMotion || phase === "expanding" || phase === "revealing" || phase === "complete";
   const showContent = reducedMotion || phase === "revealing" || phase === "complete";
 
@@ -79,14 +76,14 @@ export default function Navbar() {
                   height: "auto",
                   borderRadius: 22,
                   backgroundColor: scrolled ? "rgba(29,29,31,0.62)" : "rgba(29,29,31,0.52)",
-                  borderColor: "rgba(255,255,255,0.18)",
+                  borderColor: "rgba(184,147,62,0.35)",
                 }
               : {
                   width: 24,
                   height: 24,
                   borderRadius: 999,
                   backgroundColor: "rgba(29,29,31,0.34)",
-                  borderColor: "rgba(255,255,255,0.18)",
+                  borderColor: "rgba(184,147,62,0.35)",
                 }
           }
           transition={{ duration: 0.5, ease }}
@@ -127,15 +124,15 @@ export default function Navbar() {
               className="min-w-0"
             >
               <Link
-                href="/"
+                href="/admin"
                 className="block truncate text-sm sm:text-base tracking-wide text-white"
               >
-                Lux <span className="text-[#B8933E]">Resin</span> Impression
+                Lux <span className="text-[#B8933E]">Resin</span> Admin
               </Link>
             </motion.div>
 
             <div className="hidden md:flex items-center gap-1 text-[13px] text-gray-300 shrink-0">
-              {navLinks.map((link, i) => {
+              {adminLinks.map((link, i) => {
                 const isActive = pathname === link.href;
                 return (
                   <motion.div
@@ -173,19 +170,18 @@ export default function Navbar() {
               }
               transition={{ duration: 0.3, delay: showContent ? 0.3 : 0 }}
             >
-              <Link
-                href="/cart"
-                className="hidden md:inline-flex relative items-center gap-2 text-sm text-white px-4 py-2 rounded-full whitespace-nowrap"
+              <span className="hidden md:inline-flex items-center text-sm text-[#E0B0A5] whitespace-nowrap">
+                Welcome, Admin
+              </span>
+
+              <button
+                onClick={() => signOut({ callbackUrl: "/admin/login" })}
+                className="hidden md:inline-flex items-center gap-2 text-sm text-white px-4 py-2 rounded-full whitespace-nowrap cursor-pointer"
                 style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
               >
-                <ShoppingBag size={15} />
-                Cart
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-white text-[#1D1D1F] text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
+                <LogOut size={15} />
+                Logout
+              </button>
 
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -204,7 +200,8 @@ export default function Navbar() {
             transition={{ duration: 0.35, ease }}
           >
             <div className="flex flex-col px-6 pb-5 gap-1 border-t border-white/10 pt-3">
-              {navLinks.map((link, i) => {
+              <span className="py-2 text-sm text-[#E0B0A5]">Welcome, Admin</span>
+              {adminLinks.map((link, i) => {
                 const isActive = pathname === link.href;
                 return (
                   <motion.div
@@ -226,13 +223,14 @@ export default function Navbar() {
                   </motion.div>
                 );
               })}
-              <Link
-                href="/cart"
-                className="mt-2 text-sm text-white px-4 py-2 rounded-full text-center"
+              <button
+                onClick={() => signOut({ callbackUrl: "/admin/login" })}
+                className="mt-2 flex items-center justify-center gap-2 text-sm text-white px-4 py-2 rounded-full cursor-pointer"
                 style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
               >
-                Cart {totalItems > 0 && `(${totalItems})`}
-              </Link>
+                <LogOut size={15} />
+                Logout
+              </button>
             </div>
           </motion.div>
         </motion.div>
