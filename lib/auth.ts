@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "../auth.config";
 import { prisma } from "./prisma";
 
 const result = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -32,9 +34,6 @@ const result = NextAuth({
   ],
   session: {
     strategy: "jwt",
-  },
-  pages: {
-    signIn: "/admin/login",
   },
 });
 
