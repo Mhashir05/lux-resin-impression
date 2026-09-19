@@ -5,7 +5,7 @@ import { LogOut, Menu, X } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const adminLinks = [
   { name: "Dashboard", href: "/admin" },
@@ -17,25 +17,37 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 type Phase = "enter" | "settled" | "expanding" | "revealing" | "complete";
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeReducedMotion(onChange: () => void) {
+  const mql = window.matchMedia(REDUCED_MOTION_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+const getReducedMotion = () => window.matchMedia(REDUCED_MOTION_QUERY).matches;
+const getServerReducedMotion = () => false;
+
 export default function AdminNavbar() {
   const [phase, setPhase] = useState<Phase>("enter");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotion,
+    getServerReducedMotion
+  );
   const pathname = usePathname();
-  if (pathname === "/admin/login") return null;
 
-  useEffect(() => {
+  // Close the mobile menu whenever the route changes.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) {
-      setReducedMotion(true);
-      setPhase("complete");
-      return;
-    }
+    // With reduced motion, `expanded`/`showContent` below are already true.
+    if (reducedMotion) return;
 
     const timers = [
       setTimeout(() => setPhase("settled"), 400),
@@ -44,13 +56,15 @@ export default function AdminNavbar() {
       setTimeout(() => setPhase("complete"), 1300),
     ];
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [reducedMotion]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  if (pathname === "/admin/login") return null;
 
   const expanded = reducedMotion || phase === "expanding" || phase === "revealing" || phase === "complete";
   const showContent = reducedMotion || phase === "revealing" || phase === "complete";
