@@ -4,13 +4,23 @@ import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { products } from "../data/products";
 import WhiteButton from "./WhiteButton";
 
-const exclusiveProducts = products.filter((p) =>
-  ["floral-keepsake-frame", "geode-wall-piece", "pressed-flower-pendant"].includes(p.slug)
-);
-export default function ExclusiveCarousel() {
+// The fields a carousel card renders; a Prisma Product satisfies this.
+export type ExclusivePiece = {
+  slug: string;
+  name: string;
+  category: string;
+  description: string;
+  price: string;
+  images: string[];
+};
+
+export default function ExclusiveCarousel({
+  exclusiveProducts,
+}: {
+  exclusiveProducts: ExclusivePiece[];
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -70,7 +80,8 @@ export default function ExclusiveCarousel() {
         </div>
       </div>
 
-      {/* Controls */}
+      {/* Controls (pointless with a single piece, so hidden) */}
+      {exclusiveProducts.length > 1 && (
       <div className="flex items-center justify-center gap-6 mt-8">
         <button onClick={scrollPrev} className="w-10 h-10 flex items-center justify-center border border-[#B8933E]/40 text-[#B8933E] rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] hover:border-[#B8933E] hover:text-white">
           <ChevronLeft size={18} />
@@ -84,6 +95,7 @@ export default function ExclusiveCarousel() {
           <ChevronRight size={18} />
         </button>
       </div>
+      )}
     </section>
   );
 }

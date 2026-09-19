@@ -20,12 +20,12 @@ export default async function EditProductPage({
       productId={product.id}
       initialData={{
         name: product.name,
-        slug: product.slug,
         price: product.price,
         category: product.category,
         availability: product.availability,
         description: product.description,
         featured: product.featured,
+        isExclusive: product.isExclusive,
       }}
     />
   );

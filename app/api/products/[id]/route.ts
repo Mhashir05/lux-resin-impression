@@ -16,7 +16,7 @@ export async function PATCH(
 
   try {
     const body = await request.json();
-    const { name, slug, price, category, availability, description, featured } = body;
+    const { name, slug, price, category, availability, description, featured, isExclusive } = body;
 
     // PATCH is a partial update: only check the fields that were sent.
     if (
@@ -41,6 +41,13 @@ export async function PATCH(
       );
     }
 
+    if (isExclusive !== undefined && typeof isExclusive !== "boolean") {
+      return NextResponse.json(
+        { success: false, error: "isExclusive must be true or false" },
+        { status: 400 }
+      );
+    }
+
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -51,6 +58,7 @@ export async function PATCH(
         availability,
         description,
         featured,
+        isExclusive,
       },
     });
 

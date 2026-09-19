@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { AVAILABILITY, CATEGORIES } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { generateSlug } from "@/lib/slug";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -11,9 +12,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, slug, price, category, availability, description, featured } = body;
+    // Any client-sent slug is ignored; it is generated from the name below.
+    const { name, price, category, availability, description, featured, isExclusive } = body;
 
-    if (!name || !slug || !price || !category || !availability || !description) {
+    if (!name || !price || !category || !availability || !description) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
@@ -33,6 +35,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (isExclusive !== undefined && typeof isExclusive !== "boolean") {
+      return NextResponse.json(
+        { error: "isExclusive must be true or false" },
+        { status: 400 }
+      );
+    }
+    if (typeof name !== "string") {
+      return NextResponse.json(
+        { error: "name must be a string" },
+        { status: 400 }
+      );
+    }
+    const baseSlug = generateSlug(name);
+    if (!baseSlug) {
+      return NextResponse.json(
+        { error: "name must contain at least one letter or number" },
+        { status: 400 }
+      );
+    }
+
+    // "ring", then "ring-2", "ring-3", ... until the slug is free.
+    const taken = new Set(
+      (
+        await prisma.product.findMany({
+          where: { slug: { startsWith: baseSlug } },
+          select: { slug: true },
+        })
+      ).map((p) => p.slug)
+    );
+    let slug = baseSlug;
+    for (let n = 2; taken.has(slug); n++) {
+      slug = `${baseSlug}-${n}`;
+    }
+
     const product = await prisma.product.create({
       data: {
         name,
@@ -42,6 +78,7 @@ export async function POST(request: NextRequest) {
         availability,
         description,
         featured: featured ?? false,
+        isExclusive: isExclusive ?? false,
         images: [],
       },
     });

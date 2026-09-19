@@ -21,6 +21,7 @@ model Product {
   description  String
   images       String[]
   featured     Boolean  @default(false)
+  isExclusive  Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
 

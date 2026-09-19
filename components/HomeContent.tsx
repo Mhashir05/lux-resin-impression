@@ -3,12 +3,18 @@
 import Link from "next/link";
 import type { Product } from "../data/products";
 import Button from "./Button";
-import ExclusiveCarousel from "./ExclusiveCarousel";
+import ExclusiveCarousel, { type ExclusivePiece } from "./ExclusiveCarousel";
 import Footer from "./Footer";
 import ProductsList from "./ProductsList";
 import TextLink from "./TextLink";
 
-export default function HomeContent({ featuredProducts }: { featuredProducts: Product[] }) {
+export default function HomeContent({
+  featuredProducts,
+  exclusiveProducts,
+}: {
+  featuredProducts: Product[];
+  exclusiveProducts: ExclusivePiece[];
+}) {
   return (
     <main className="min-h-screen bg-white">
       <section className="flex flex-col items-center justify-center text-center px-6 py-24">
@@ -48,7 +54,10 @@ export default function HomeContent({ featuredProducts }: { featuredProducts: Pr
         </div>
       </section>
 
-      <ExclusiveCarousel />
+      {/* No exclusive products marked in the admin: skip the whole section. */}
+      {exclusiveProducts.length > 0 && (
+        <ExclusiveCarousel exclusiveProducts={exclusiveProducts} />
+      )}
 
       <section className="px-6 py-24 max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-12">

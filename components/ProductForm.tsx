@@ -6,12 +6,12 @@ import { AVAILABILITY, CATEGORIES } from "../lib/constants";
 
 type ProductFormData = {
   name: string;
-  slug: string;
   price: string;
   category: string;
   availability: string;
   description: string;
   featured: boolean;
+  isExclusive: boolean;
 };
 
 // Options for a <select>. If the stored value isn't one of the current options
@@ -41,12 +41,12 @@ export default function ProductForm({
   const [form, setForm] = useState<ProductFormData>(
     initialData ?? {
       name: "",
-      slug: "",
       price: "",
       category: "",
       availability: "",
       description: "",
       featured: false,
+      isExclusive: false,
     }
   );
 
@@ -112,17 +112,6 @@ export default function ProductForm({
         <input
           name="name"
           value={form.name}
-          onChange={handleChange}
-          required
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm text-gray-600 mb-1">Slug</label>
-        <input
-          name="slug"
-          value={form.slug}
           onChange={handleChange}
           required
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -196,14 +185,36 @@ export default function ProductForm({
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-gray-600">
+      <label className="flex items-start gap-2 text-sm text-gray-600">
         <input
           type="checkbox"
           name="featured"
           checked={form.featured}
           onChange={handleChange}
+          className="mt-0.5"
         />
-        Featured on homepage
+        <span>
+          Featured on homepage
+          <span className="block text-xs text-gray-400">
+            Highlights this product on the home page.
+          </span>
+        </span>
+      </label>
+
+      <label className="flex items-start gap-2 text-sm text-gray-600">
+        <input
+          type="checkbox"
+          name="isExclusive"
+          checked={form.isExclusive}
+          onChange={handleChange}
+          className="mt-0.5"
+        />
+        <span>
+          Mark as Exclusive
+          <span className="block text-xs text-gray-400">
+            Adds this product to the Exclusive collection. Separate from Featured.
+          </span>
+        </span>
       </label>
 
       <button
