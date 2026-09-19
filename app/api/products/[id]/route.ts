@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { AVAILABILITY, CATEGORIES } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,6 +17,29 @@ export async function PATCH(
   try {
     const body = await request.json();
     const { name, slug, price, category, availability, description, featured } = body;
+
+    // PATCH is a partial update: only check the fields that were sent.
+    if (
+      category !== undefined &&
+      !(CATEGORIES as readonly unknown[]).includes(category)
+    ) {
+      return NextResponse.json(
+        { success: false, error: `category must be one of: ${CATEGORIES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+    if (
+      availability !== undefined &&
+      !(AVAILABILITY as readonly unknown[]).includes(availability)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `availability must be one of: ${AVAILABILITY.join(", ")}`,
+        },
+        { status: 400 }
+      );
+    }
 
     const product = await prisma.product.update({
       where: { id },

@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { AVAILABILITY, CATEGORIES } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,6 +16,19 @@ export async function POST(request: NextRequest) {
     if (!name || !slug || !price || !category || !availability || !description) {
       return NextResponse.json(
         { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    if (!(CATEGORIES as readonly unknown[]).includes(category)) {
+      return NextResponse.json(
+        { error: `category must be one of: ${CATEGORIES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+    if (!(AVAILABILITY as readonly unknown[]).includes(availability)) {
+      return NextResponse.json(
+        { error: `availability must be one of: ${AVAILABILITY.join(", ")}` },
         { status: 400 }
       );
     }

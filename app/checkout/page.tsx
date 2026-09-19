@@ -53,7 +53,11 @@ export default function CheckoutPage() {
         clearCart();
         router.push("/order-confirmed");
       } else {
-        alert("Something went wrong. Please try again.");
+        alert(
+          typeof data.error === "string" && data.error
+            ? data.error
+            : "Something went wrong. Please try again."
+        );
         setLoading(false);
       }
     } catch (error) {
