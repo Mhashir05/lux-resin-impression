@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useCart } from "../context/CartContext";
 
 const navLinks = [
@@ -18,25 +18,38 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 type Phase = "enter" | "settled" | "expanding" | "revealing" | "complete";
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeReducedMotion(onChange: () => void) {
+  const mql = window.matchMedia(REDUCED_MOTION_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+const getReducedMotion = () => window.matchMedia(REDUCED_MOTION_QUERY).matches;
+const getServerReducedMotion = () => false;
+
 export default function Navbar() {
   const [phase, setPhase] = useState<Phase>("enter");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotion,
+    getServerReducedMotion
+  );
   const { totalItems } = useCart();
   const pathname = usePathname();
 
-  useEffect(() => {
+  // Close the mobile menu whenever the route changes.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) {
-      setReducedMotion(true);
-      setPhase("complete");
-      return;
-    }
+    // With reduced motion, `expanded`/`showContent` below are already true.
+    if (reducedMotion) return;
 
     const timers = [
       setTimeout(() => setPhase("settled"), 400),
@@ -45,7 +58,7 @@ export default function Navbar() {
       setTimeout(() => setPhase("complete"), 1300),
     ];
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [reducedMotion]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);

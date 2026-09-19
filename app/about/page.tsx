@@ -44,7 +44,7 @@ export default function AboutPage() {
             </h2>
             <p className="mt-5 text-gray-500 leading-relaxed">
               I started pouring resin because I wanted to keep the flowers from my
-              sister's wedding. That first pendant was cloudy and lopsided, and I made
+              sister&apos;s wedding. That first pendant was cloudy and lopsided, and I made
               forty more before one felt right. I still mix every batch myself, sand
               every edge by hand, and wait the full cure — no shortcuts, even when an
               order is urgent.

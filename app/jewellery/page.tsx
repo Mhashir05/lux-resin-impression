@@ -2,6 +2,8 @@ import Footer from "../../components/Footer";
 import ProductsList from "../../components/ProductsList";
 import { prisma } from "../../lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function JewelleryPage() {
   const jewellery = await prisma.product.findMany({
     where: { category: "Jewellery" },

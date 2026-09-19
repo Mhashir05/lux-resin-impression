@@ -69,7 +69,7 @@ export default function Footer() {
             in mind?
           </h3>
           <p className="text-sm text-gray-400 mt-2">
-            Message us and we'll bring your idea to life, one piece at a time.
+            Message us and we&apos;ll bring your idea to life, one piece at a time.
           </p>
         </div>
         <WhiteButton><FaWhatsapp size={16} />
