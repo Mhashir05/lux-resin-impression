@@ -7,8 +7,14 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const email = "admin@luxresin.com";
-  const plainPassword = "admin123";
+  const email = process.env.SEED_ADMIN_EMAIL;
+  const plainPassword = process.env.SEED_ADMIN_PASSWORD;
+
+  if (!email || !plainPassword) {
+    throw new Error(
+      "SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD must be set in the environment (e.g. in .env) before running the admin seed."
+    );
+  }
 
   // Hash the password before storing
   const passwordHash = await bcrypt.hash(plainPassword, 10);
@@ -24,7 +30,7 @@ async function main() {
   });
 
   console.log(`Admin created: ${admin.email}`);
-  console.log("You can now log in with this email and the password you set.");
+  console.log("You can now log in with SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD.");
 }
 
 main()
