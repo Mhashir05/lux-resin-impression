@@ -3,6 +3,7 @@
 import { ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { AVAILABILITY_STATUS } from "../lib/constants";
 import type { Product } from "../data/products";
 
 export default function ProductDetail({ product }: { product: Product }) {
@@ -55,7 +56,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         </p>
 
         {/* Customization box — only for Crafted to Order */}
-        {product.availability === "Crafted to Order" && (
+        {product.availability === AVAILABILITY_STATUS.CRAFTED_TO_ORDER && (
           <div className="mt-8">
             <label className="text-sm text-[#1D1D1F] block mb-2">
               Customization details <span className="text-gray-400">(optional)</span>

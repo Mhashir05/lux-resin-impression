@@ -1,12 +1,13 @@
 import Footer from "../../components/Footer";
 import ProductsList from "../../components/ProductsList";
+import { CATEGORY } from "../../lib/constants";
 import { prisma } from "../../lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function JewelleryPage() {
   const jewellery = await prisma.product.findMany({
-    where: { category: "Jewellery" },
+    where: { category: CATEGORY.JEWELLERY },
     orderBy: { createdAt: "desc" },
   });
 

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AVAILABILITY, CATEGORIES } from "../lib/constants";
 
 type ProductFormData = {
   name: string;
@@ -12,6 +13,17 @@ type ProductFormData = {
   description: string;
   featured: boolean;
 };
+
+// Options for a <select>. If the stored value isn't one of the current options
+// (e.g. a product created before these lists existed), keep it selectable so
+// editing the product doesn't silently change it.
+function buildOptions(options: readonly string[], current: string) {
+  const list = options.map((value) => ({ value, label: value }));
+  if (current && !options.includes(current)) {
+    list.unshift({ value: current, label: `${current} (legacy value)` });
+  }
+  return list;
+}
 
 export default function ProductForm({
   mode,
@@ -39,7 +51,7 @@ export default function ProductForm({
   );
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -130,28 +142,44 @@ export default function ProductForm({
 
       <div>
         <label className="block text-sm text-gray-600 mb-1">Category</label>
-        <input
+        <select
           name="category"
           value={form.category}
           onChange={handleChange}
           required
-          placeholder="jewellery or resin-art"
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-        />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white"
+        >
+          <option value="" disabled>
+            Select a category
+          </option>
+          {buildOptions(CATEGORIES, form.category).map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
         <label className="block text-sm text-gray-600 mb-1">
           Availability
         </label>
-        <input
+        <select
           name="availability"
           value={form.availability}
           onChange={handleChange}
           required
-          placeholder="In Stock or Made to Order"
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-        />
+          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white"
+        >
+          <option value="" disabled>
+            Select availability
+          </option>
+          {buildOptions(AVAILABILITY, form.availability).map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
