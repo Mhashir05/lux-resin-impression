@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     // Any client-sent slug is ignored; it is generated from the name below.
-    const { name, price, category, availability, description, featured, isExclusive } = body;
+    const { name, price, category, availability, description, featured, isExclusive, images } = body;
 
     if (!name || !price || !category || !availability || !description) {
       return NextResponse.json(
@@ -38,6 +38,15 @@ export async function POST(request: NextRequest) {
     if (isExclusive !== undefined && typeof isExclusive !== "boolean") {
       return NextResponse.json(
         { error: "isExclusive must be true or false" },
+        { status: 400 }
+      );
+    }
+    if (
+      images !== undefined &&
+      (!Array.isArray(images) || !images.every((url) => typeof url === "string"))
+    ) {
+      return NextResponse.json(
+        { error: "images must be an array of URLs" },
         { status: 400 }
       );
     }
@@ -79,7 +88,7 @@ export async function POST(request: NextRequest) {
         description,
         featured: featured ?? false,
         isExclusive: isExclusive ?? false,
-        images: [],
+        images: images ?? [],
       },
     });
 

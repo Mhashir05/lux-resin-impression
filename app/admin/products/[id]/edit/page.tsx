@@ -27,6 +27,7 @@ export default async function EditProductPage({
         featured: product.featured,
         isExclusive: product.isExclusive,
       }}
+      initialImages={product.images}
     />
   );
 }

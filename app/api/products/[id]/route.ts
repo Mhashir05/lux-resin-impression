@@ -16,7 +16,7 @@ export async function PATCH(
 
   try {
     const body = await request.json();
-    const { name, slug, price, category, availability, description, featured, isExclusive } = body;
+    const { name, slug, price, category, availability, description, featured, isExclusive, images } = body;
 
     // PATCH is a partial update: only check the fields that were sent.
     if (
@@ -47,6 +47,15 @@ export async function PATCH(
         { status: 400 }
       );
     }
+    if (
+      images !== undefined &&
+      (!Array.isArray(images) || !images.every((url) => typeof url === "string"))
+    ) {
+      return NextResponse.json(
+        { success: false, error: "images must be an array of URLs" },
+        { status: 400 }
+      );
+    }
 
     const product = await prisma.product.update({
       where: { id },
@@ -59,6 +68,7 @@ export async function PATCH(
         description,
         featured,
         isExclusive,
+        images,
       },
     });
 
