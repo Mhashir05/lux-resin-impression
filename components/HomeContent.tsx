@@ -8,28 +8,54 @@ import Footer from "./Footer";
 import ProductsList from "./ProductsList";
 import TextLink from "./TextLink";
 
+// The copy this page shows, sourced from SiteContent by app/page.tsx (a
+// Server Component) since this component is a Client Component and can't
+// query Prisma itself. home.hero.background_image and home.story.image are
+// intentionally not part of this — the hero and story image stay as they
+// were.
+export type HomeCopy = {
+  heroEyebrow: string;
+  heroHeading: string;
+  heroSubheading: string;
+  heroCtaText: string;
+  storyEyebrow: string;
+  storyHeading: string;
+  storyBody: string;
+  storyLinkText: string;
+  jewelleryTitle: string;
+  jewelleryDescription: string;
+  resinArtTitle: string;
+  resinArtDescription: string;
+};
+
 export default function HomeContent({
   featuredProducts,
   exclusiveProducts,
+  content,
 }: {
   featuredProducts: Product[];
   exclusiveProducts: ExclusivePiece[];
+  content: HomeCopy;
 }) {
   return (
     <main className="min-h-screen bg-white">
       <section className="flex flex-col items-center justify-center text-center px-6 py-24">
         <p className="text-xs tracking-[0.2em] text-gray-400 mb-6">
-          Every Piece , Handcrafted to Perfection
+          {content.heroEyebrow}
         </p>
+        {/* The original heading had a two-tone accent (two words in gold)
+            hardcoded via <span>s. A single SiteContent string can't carry
+            that per-word styling, so this renders as one plain-colour
+            heading now — see the accompanying note on this change. */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-[#1D1D1F] leading-tight">
-          Designed to <span className="text-[#B8933E]">Endure ,</span> Admired <span className="text-[#B8933E]">forever</span>
+          {content.heroHeading}
         </h1>
         <p className="mt-6 text-gray-500 max-w-md">
-          Lux jewellery and Resin art.
+          {content.heroSubheading}
         </p>
 
         <div className="mt-10 flex gap-4">
-          <Link href="/products"><Button variant="primary">Shop the collection</Button></Link>
+          <Link href="/products"><Button variant="primary">{content.heroCtaText}</Button></Link>
         </div>
       </section>
 
@@ -37,16 +63,15 @@ export default function HomeContent({
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
             <p className="mt-6 text-base md:text-s text-gray-500 leading-relaxed">
-              OUR STORY
+              {content.storyEyebrow}
             </p>
             <h2 className="text-4xl md:text-5xl font-light text-[#1D1D1F] leading-snug">
-              Crafted with Passion, Worn with Pride.
+              {content.storyHeading}
             </h2>
             <p className="mt-6 text-base md:text-lg text-gray-500 leading-relaxed">
-              Crafted beyond seasons. Designed for a lifetime.
-              Every piece is handcrafted with precision to preserve its beauty for years to come.
+              {content.storyBody}
             </p>
-            <Link href="/about"><TextLink>Read our story →</TextLink></Link>
+            <Link href="/about"><TextLink>{content.storyLinkText}</TextLink></Link>
           </div>
           <div className="h-80 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-300 text-sm">
             LIFESTYLE — HANDS AT WORK
@@ -81,9 +106,9 @@ export default function HomeContent({
               CATEGORY — JEWELLERY
             </div>
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold text-[#1D1D1F]">Jewellery</h3>
+              <h3 className="text-2xl font-bold text-[#1D1D1F]">{content.jewelleryTitle}</h3>
               <p className="text-sm text-gray-500 mt-2 max-w-xs">
-                Earrings, pendants, bangles and rings set with pressed flowers and gold leaf.
+                {content.jewelleryDescription}
               </p>
               <Link href="/jewellery" className="inline-block mt-4">
                 <TextLink>Explore jewellery →</TextLink>
@@ -96,9 +121,9 @@ export default function HomeContent({
               CATEGORY — RESIN ART
             </div>
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold text-[#1D1D1F]">Resin Art</h3>
+              <h3 className="text-2xl font-bold text-[#1D1D1F]">{content.resinArtTitle}</h3>
               <p className="text-sm text-gray-500 mt-2 max-w-xs">
-                Trays, coasters, wall pieces and keepsakes cast to order for your home.
+                {content.resinArtDescription}
               </p>
               <Link href="/resin-art" className="inline-block mt-4">
                 <TextLink>Explore resin art →</TextLink>

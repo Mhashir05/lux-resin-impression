@@ -66,7 +66,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (pathname === "/policies" || pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin")) return null;
 
   const expanded = reducedMotion || phase === "expanding" || phase === "revealing" || phase === "complete";
   const showContent = reducedMotion || phase === "revealing" || phase === "complete";

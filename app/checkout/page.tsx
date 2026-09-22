@@ -42,7 +42,6 @@ export default function CheckoutPage() {
           phone: phone,
           address: address,
           items: items,
-          totalAmount: totalPrice,
           paymentMethod: payment,
         }),
       });

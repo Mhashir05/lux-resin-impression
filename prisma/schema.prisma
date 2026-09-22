@@ -43,3 +43,9 @@ model AdminUser {
   passwordHash String
   createdAt    DateTime @default(now())
 }
+
+model SiteContent {
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}

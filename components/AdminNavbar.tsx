@@ -11,6 +11,7 @@ const adminLinks = [
   { name: "Dashboard", href: "/admin" },
   { name: "Products", href: "/admin/products" },
   { name: "Orders", href: "/admin/orders" },
+  { name: "Content", href: "/admin/content" },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;

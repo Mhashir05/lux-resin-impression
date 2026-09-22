@@ -19,8 +19,6 @@ const policyLinks = [
   { name: "Refund Policy", href: "/policies#refund" },
 ];
 
-
-
 export default function Footer() {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const [showTop, setShowTop] = useState(false);
@@ -50,7 +48,7 @@ export default function Footer() {
             "linear-gradient(90deg, transparent 0%, #E0B0A5 30%, #C99E8F 50%, #E0B0A5 70%, transparent 100%)",
         }}
       />
-     <div className="absolute top-10 -left-20 w-72 h-72 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #E0B0A540 0%, transparent 85%)", filter: "blur(40px)" }} />
+      <div className="absolute top-10 -left-20 w-72 h-72 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #E0B0A540 0%, transparent 85%)", filter: "blur(40px)" }} />
       <div className="absolute bottom-0 -right-20 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #C99E8F35 0%, transparent 85%)", filter: "blur(50px)" }} />
       {/* CTA band */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pb-12 border-b border-white/10">

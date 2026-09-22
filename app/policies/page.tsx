@@ -1,18 +1,29 @@
 import type { Metadata } from "next";
 import Footer from "../../components/Footer";
+import { getSiteContent } from "../../lib/site-content";
 
 export const metadata: Metadata = {
   title: "Policies",
 };
 
-const sections = [
-  { id: "terms", title: "Terms of Service", body: "Terms content yahan aayega." },
-  { id: "privacy", title: "Privacy Policy", body: "Privacy content yahan aayega." },
-  { id: "shipping", title: "Shipping Policy", body: "Shipping content yahan aayega." },
-  { id: "refund", title: "Refund Policy", body: "Refund content yahan aayega." },
-];
+// Headings stay fixed in code, per the spec. Bodies come from SiteContent,
+// falling back to the original placeholder copy if a key is unexpectedly
+// missing.
+const SECTIONS = [
+  { id: "terms", title: "Terms of Service", key: "policies.terms.body", fallback: "Terms content yahan aayega." },
+  { id: "privacy", title: "Privacy Policy", key: "policies.privacy.body", fallback: "Privacy content yahan aayega." },
+  { id: "shipping", title: "Shipping Policy", key: "policies.shipping.body", fallback: "Shipping content yahan aayega." },
+  { id: "refund", title: "Refund Policy", key: "policies.refund.body", fallback: "Refund content yahan aayega." },
+] as const;
 
-export default function PoliciesPage() {
+export default async function PoliciesPage() {
+  const siteContent = await getSiteContent();
+  const sections = SECTIONS.map((s) => ({
+    id: s.id,
+    title: s.title,
+    body: siteContent[s.key] || s.fallback,
+  }));
+
   return (
     <main className="min-h-screen bg-white">
 

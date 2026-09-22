@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AVAILABILITY, CATEGORIES } from "../lib/constants";
+import { isLikelyUrl } from "../lib/is-likely-url";
 
 type ProductFormData = {
   name: string;
@@ -16,15 +17,6 @@ type ProductFormData = {
 
 const MAX_IMAGES = 6;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
-
-// A pre-upload product's images can hold a placeholder label instead of a
-// real URL (e.g. "TRAY — TOP", from before uploads existed). Checking the
-// shape up front is more reliable than an <img onError>: the browser
-// resolves a non-URL string as a relative path, which can 200 with an HTML
-// page rather than cleanly failing, so onError never fires.
-function isLikelyUrl(value: string): boolean {
-  return /^(https?:|blob:|data:)/i.test(value);
-}
 
 // One image in the form, in display order. `file` is set for a newly picked
 // image that hasn't been uploaded yet; `url` is either its local object-URL
@@ -62,7 +54,6 @@ export default function ProductForm({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [imageError, setImageError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState<ProductFormData>(
     initialData ?? {
@@ -350,7 +341,6 @@ export default function ProductForm({
         )}
 
         <input
-          ref={fileInputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp"
           multiple

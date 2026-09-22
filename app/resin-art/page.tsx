@@ -1,4 +1,3 @@
-
 import Footer from "../../components/Footer";
 import ProductsList from "../../components/ProductsList";
 import { CATEGORY } from "../../lib/constants";
@@ -7,7 +6,7 @@ import { prisma } from "../../lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function ResinArtPage() {
- const jewellery = await prisma.product.findMany({
+  const resinArt = await prisma.product.findMany({
     where: { category: CATEGORY.RESIN_ART },
     orderBy: { createdAt: "desc" },
   });
@@ -22,9 +21,9 @@ export default async function ResinArtPage() {
           Trays, coasters, wall pieces and keepsakes — cast to order for your home.
         </p>
       </section>
-           <section className="px-6 pb-24 max-w-6xl mx-auto">
-             <ProductsList products={jewellery} />
-           </section>
+      <section className="px-6 pb-24 max-w-6xl mx-auto">
+        <ProductsList products={resinArt} />
+      </section>
       <Footer />
     </main>
   );
