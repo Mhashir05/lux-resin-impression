@@ -1,3 +1,4 @@
+import CourierForm from "@/components/CourierForm";
 import OrderStatusBadge from "@/components/OrderStatusBadge";
 import OrderStatusSelect from "@/components/OrderStatusSelect";
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
@@ -132,6 +133,20 @@ export default async function AdminOrderDetailPage({
                 <dd className="text-[#1D1D1F]">{formatOrderDateTime(order.createdAt)}</dd>
               </div>
             </dl>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <h2 className="text-sm font-medium text-[#1D1D1F] mb-4">Delivery / Courier</h2>
+            <CourierForm
+              orderId={order.id}
+              initialCourierService={order.courierService ?? ""}
+              initialRiderName={order.riderName ?? ""}
+              initialRiderPhone={order.riderPhone ?? ""}
+              initialTrackingId={order.trackingId ?? ""}
+              bookedAtLabel={
+                order.courierBookedAt ? formatOrderDateTime(order.courierBookedAt) : null
+              }
+            />
           </div>
         </div>
       </div>

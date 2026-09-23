@@ -35,6 +35,14 @@ model Order {
   paymentMethod String
   status        String   @default("New")
   createdAt     DateTime @default(now())
+
+  // Courier is booked externally (Bykea, Yango, etc.) by the admin — these
+  // just record what was booked, not a live tracking integration.
+  courierService  String?
+  riderName       String?
+  riderPhone      String?
+  trackingId      String?
+  courierBookedAt DateTime?
 }
 
 model AdminUser {

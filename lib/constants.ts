@@ -46,3 +46,9 @@ export const ORDER_STATUSES = [
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+// Couriers are outsourced and booked externally by the admin — there is no
+// in-house rider fleet or courier API integration.
+export const COURIER_SERVICES = ["Bykea", "Yango", "Other"] as const;
+
+export type CourierService = (typeof COURIER_SERVICES)[number];

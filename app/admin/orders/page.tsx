@@ -76,6 +76,7 @@ export default async function AdminOrdersPage({
               <th className="px-4 py-3">Total</th>
               <th className="px-4 py-3">Payment</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Courier</th>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
@@ -83,7 +84,7 @@ export default async function AdminOrdersPage({
           <tbody>
             {orders.length === 0 ? (
               <tr className="border-t border-gray-100">
-                <td colSpan={8} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-400">
                   {activeStatus ? `No ${activeStatus} orders.` : "No orders yet."}
                 </td>
               </tr>
@@ -105,6 +106,9 @@ export default async function AdminOrdersPage({
                   </td>
                   <td className="px-4 py-3">
                     <OrderStatusBadge status={order.status} />
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">
+                    {order.courierService ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                     {formatOrderDate(order.createdAt)}
