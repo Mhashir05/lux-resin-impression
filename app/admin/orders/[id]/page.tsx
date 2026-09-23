@@ -1,6 +1,8 @@
 import CourierForm from "@/components/CourierForm";
+import DeleteOrderButton from "@/components/DeleteOrderButton";
 import OrderStatusBadge from "@/components/OrderStatusBadge";
 import OrderStatusSelect from "@/components/OrderStatusSelect";
+import PaymentStatusBadge from "@/components/PaymentStatusBadge";
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
 import {
   formatOrderDateTime,
@@ -20,7 +22,10 @@ export default async function AdminOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const order = await prisma.order.findUnique({ where: { id } });
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { customer: { select: { id: true, name: true, email: true, phone: true } } },
+  });
 
   if (!order) {
     notFound();
@@ -117,6 +122,32 @@ export default async function AdminOrderDetailPage({
             <OrderStatusSelect orderId={order.id} currentStatus={order.status} />
           </div>
 
+          {order.customer && (
+            <div className="bg-white border border-gray-200 rounded-xl p-5">
+              <h2 className="text-sm font-medium text-[#1D1D1F] mb-4">Account</h2>
+              <dl className="space-y-3 text-sm">
+                <div>
+                  <dt className="text-xs text-gray-400">Name</dt>
+                  <dd className="text-[#1D1D1F]">{order.customer.name}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-400">Email</dt>
+                  <dd className="text-[#1D1D1F]">{order.customer.email}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-400">Phone</dt>
+                  <dd className="text-[#1D1D1F]">{order.customer.phone}</dd>
+                </div>
+              </dl>
+              <Link
+                href={`/admin/customers/${order.customer.id}`}
+                className="inline-block mt-4 text-xs text-[#B8933E] hover:underline"
+              >
+                View customer &rarr;
+              </Link>
+            </div>
+          )}
+
           <div className="bg-white border border-gray-200 rounded-xl p-5">
             <h2 className="text-sm font-medium text-[#1D1D1F] mb-4">Details</h2>
             <dl className="space-y-3 text-sm">
@@ -128,6 +159,18 @@ export default async function AdminOrderDetailPage({
                   ] ?? order.paymentMethod}
                 </dd>
               </div>
+              <div>
+                <dt className="text-xs text-gray-400">Payment status</dt>
+                <dd className="mt-1">
+                  <PaymentStatusBadge status={order.paymentStatus} />
+                </dd>
+              </div>
+              {order.paymentReference && (
+                <div>
+                  <dt className="text-xs text-gray-400">Payment reference</dt>
+                  <dd className="text-[#1D1D1F] break-all">{order.paymentReference}</dd>
+                </div>
+              )}
               <div>
                 <dt className="text-xs text-gray-400">Placed</dt>
                 <dd className="text-[#1D1D1F]">{formatOrderDateTime(order.createdAt)}</dd>
@@ -148,6 +191,12 @@ export default async function AdminOrderDetailPage({
               }
             />
           </div>
+
+          <DeleteOrderButton
+            orderId={order.id}
+            orderNumber={order.orderNumber}
+            status={order.status}
+          />
         </div>
       </div>
     </div>

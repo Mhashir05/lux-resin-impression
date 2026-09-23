@@ -28,7 +28,37 @@ const result = NextAuth({
 
         if (!isValid) return null;
 
-        return { id: admin.id, email: admin.email };
+        return { id: admin.id, email: admin.email, role: "admin" };
+      },
+    }),
+    Credentials({
+      id: "customer",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        const email = credentials?.email as string;
+        const password = credentials?.password as string;
+
+        if (!email || !password) return null;
+
+        const customer = await prisma.customer.findUnique({
+          where: { email },
+        });
+
+        if (!customer) return null;
+
+        const isValid = await bcrypt.compare(password, customer.passwordHash);
+
+        if (!isValid) return null;
+
+        return {
+          id: customer.id,
+          email: customer.email,
+          name: customer.name,
+          role: "customer",
+        };
       },
     }),
   ],

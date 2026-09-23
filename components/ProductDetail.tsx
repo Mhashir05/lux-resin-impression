@@ -88,9 +88,6 @@ export default function ProductDetail({ product }: { product: Product }) {
             <ShoppingBag size={16} />
             Add to cart
           </button>
-          <button className="w-full text-sm text-gray-500 border border-gray-200 py-3 rounded-full cursor-pointer transition-all duration-300 hover:border-[#B8933E] hover:text-[#B8933E]">
-            Prefer to chat? Order on WhatsApp
-          </button>
         </div>
       </div>
     </div>

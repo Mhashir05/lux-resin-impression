@@ -1,4 +1,5 @@
 import OrderStatusBadge from "@/components/OrderStatusBadge";
+import PaymentStatusBadge from "@/components/PaymentStatusBadge";
 import { ORDER_STATUSES, PAYMENT_METHOD_LABELS } from "@/lib/constants";
 import { formatOrderDate, formatPKR, shortOrderId } from "@/lib/orders";
 import { prisma } from "@/lib/prisma";
@@ -20,6 +21,7 @@ export default async function AdminOrdersPage({
 
   const allOrders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
+    include: { customer: { select: { name: true, email: true } } },
   });
   const orders = activeStatus
     ? allOrders.filter((order) => order.status === activeStatus)
@@ -72,6 +74,7 @@ export default async function AdminOrdersPage({
             <tr>
               <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>
+              <th className="px-4 py-3">Account</th>
               <th className="px-4 py-3">Phone</th>
               <th className="px-4 py-3">Total</th>
               <th className="px-4 py-3">Payment</th>
@@ -84,7 +87,7 @@ export default async function AdminOrdersPage({
           <tbody>
             {orders.length === 0 ? (
               <tr className="border-t border-gray-100">
-                <td colSpan={9} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={10} className="px-4 py-8 text-center text-gray-400">
                   {activeStatus ? `No ${activeStatus} orders.` : "No orders yet."}
                 </td>
               </tr>
@@ -95,14 +98,27 @@ export default async function AdminOrdersPage({
                     {shortOrderId(order.id)}
                   </td>
                   <td className="px-4 py-3 text-[#1D1D1F]">{order.customerName}</td>
+                  <td className="px-4 py-3 text-gray-600">
+                    {order.customer ? (
+                      <>
+                        <p className="text-[#1D1D1F]">{order.customer.name}</p>
+                        <p className="text-xs text-gray-400">{order.customer.email}</p>
+                      </>
+                    ) : (
+                      <span className="text-xs text-gray-400 italic">Guest (legacy)</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{order.phone}</td>
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                     {formatPKR(order.totalAmount)}
                   </td>
                   <td className="px-4 py-3 text-gray-600">
-                    {(PAYMENT_METHOD_LABELS as Record<string, string | undefined>)[
-                      order.paymentMethod
-                    ] ?? order.paymentMethod}
+                    <p>
+                      {(PAYMENT_METHOD_LABELS as Record<string, string | undefined>)[
+                        order.paymentMethod
+                      ] ?? order.paymentMethod}
+                    </p>
+                    <PaymentStatusBadge status={order.paymentStatus} />
                   </td>
                   <td className="px-4 py-3">
                     <OrderStatusBadge status={order.status} />

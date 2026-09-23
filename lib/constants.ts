@@ -23,8 +23,11 @@ export const AVAILABILITY = [
 
 export type Availability = (typeof AVAILABILITY)[number];
 
-// Values sent by the checkout page's payment radio buttons.
-export const PAYMENT_METHODS = ["advance", "transfer-on-delivery", "cod"] as const;
+// Values sent by the checkout page's payment radio buttons. "Safepay" (capital
+// S, unlike the others) is created only via app/api/payments/safepay/verify —
+// never accepted from a plain /api/orders POST — since it implies a
+// gateway-confirmed payment, not a manually-reconciled one.
+export const PAYMENT_METHODS = ["advance", "transfer-on-delivery", "cod", "Safepay"] as const;
 
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
@@ -33,6 +36,7 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   advance: "Advance Transfer",
   "transfer-on-delivery": "Transfer on Delivery",
   cod: "Cash on Delivery",
+  Safepay: "Pay Online (Card/Wallet)",
 };
 
 // Order.status is a plain string in the database. "New" is the schema default

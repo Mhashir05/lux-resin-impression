@@ -42,6 +42,7 @@ export async function PATCH(
   const data: Prisma.OrderUpdateInput = {};
 
   // Status: unchanged from before — only validated/written when present.
+  let nextStatus: string | undefined;
   if ("status" in fields) {
     const status = fields.status;
     if (!(ORDER_STATUSES as readonly unknown[]).includes(status)) {
@@ -53,7 +54,8 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    data.status = status as string;
+    nextStatus = status as string;
+    data.status = nextStatus;
   }
 
   // Courier is booked outside the app (Bykea, Yango, ...); this just records
@@ -91,10 +93,10 @@ export async function PATCH(
   }
 
   try {
-    if (courierFieldsInBody) {
+    if (nextStatus !== undefined || courierFieldsInBody) {
       const existing = await prisma.order.findUnique({
         where: { id },
-        select: { courierBookedAt: true },
+        select: { status: true, courierBookedAt: true },
       });
       if (!existing) {
         return NextResponse.json(
@@ -102,7 +104,12 @@ export async function PATCH(
           { status: 404 }
         );
       }
-      if (!existing.courierBookedAt) {
+      // Only log a history row when the status actually changes — resaving
+      // the same status shouldn't duplicate an entry.
+      if (nextStatus !== undefined && nextStatus !== existing.status) {
+        data.statusHistory = { create: { status: nextStatus } };
+      }
+      if (courierFieldsInBody && !existing.courierBookedAt) {
         data.courierBookedAt = new Date();
       }
     }
@@ -130,4 +137,32 @@ export async function PATCH(
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  const order = await prisma.order.findUnique({ where: { id }, select: { status: true } });
+  if (!order) {
+    return NextResponse.json({ success: false, error: "Order not found" }, { status: 404 });
+  }
+  if (order.status !== "New") {
+    return NextResponse.json(
+      { success: false, error: "Only New orders can be deleted" },
+      { status: 400 }
+    );
+  }
+
+  // OrderStatusHistory cascade-deletes via the relation's onDelete: Cascade.
+  await prisma.order.delete({ where: { id } });
+
+  return NextResponse.json({ success: true });
 }

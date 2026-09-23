@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "../components/Navbar";
 import SmoothScroll from "../components/SmoothScroll";
@@ -35,12 +36,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CartProvider>
-          <SmoothScroll>
-            <Navbar />
-            {children}
-          </SmoothScroll>
-        </CartProvider>
+        <SessionProvider>
+          <CartProvider>
+            <SmoothScroll>
+              <Navbar />
+              {children}
+            </SmoothScroll>
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

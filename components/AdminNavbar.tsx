@@ -11,6 +11,7 @@ const adminLinks = [
   { name: "Dashboard", href: "/admin" },
   { name: "Products", href: "/admin/products" },
   { name: "Orders", href: "/admin/orders" },
+  { name: "Customers", href: "/admin/customers" },
   { name: "Content", href: "/admin/content" },
 ];
 

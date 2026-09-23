@@ -2,7 +2,13 @@ import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "../../components/Footer";
 
-export default function OrderConfirmedPage() {
+export default async function OrderConfirmedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ orderNumber?: string }>;
+}) {
+  const { orderNumber } = await searchParams;
+
   return (
     <main className="min-h-screen bg-white">
 
@@ -14,6 +20,12 @@ export default function OrderConfirmedPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-[#1D1D1F] mb-4">
           Thank you for your <span className="text-[#B8933E]">order</span>
         </h1>
+
+        {orderNumber && (
+          <p className="inline-block text-sm text-[#1D1D1F] bg-[#FBF8F2] border border-[#B8933E]/30 rounded-full px-5 py-2 mb-6">
+            Order <span className="font-medium">{orderNumber}</span>
+          </p>
+        )}
 
         <p className="text-gray-500 leading-relaxed mb-2">
           We&apos;ve received your order and will confirm it with you on WhatsApp shortly.

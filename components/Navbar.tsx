@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { LogOut, Menu, ShoppingBag, User, X } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
@@ -38,6 +39,8 @@ export default function Navbar() {
     getServerReducedMotion
   );
   const { totalItems } = useCart();
+  const { data: session } = useSession();
+  const isCustomer = session?.user?.role === "customer";
   const pathname = usePathname();
 
   // Close the mobile menu whenever the route changes.
@@ -186,6 +189,35 @@ export default function Navbar() {
               }
               transition={{ duration: 0.3, delay: showContent ? 0.3 : 0 }}
             >
+              {isCustomer ? (
+                <div className="hidden md:flex items-center gap-3">
+                  <Link
+                    href="/account"
+                    aria-label="My Account"
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full text-white"
+                    style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
+                  >
+                    <User size={15} />
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="inline-flex items-center gap-2 text-sm text-white px-4 py-2 rounded-full whitespace-nowrap cursor-pointer"
+                    style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
+                  >
+                    <LogOut size={15} />
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden md:inline-flex items-center text-sm text-white px-4 py-2 rounded-full whitespace-nowrap"
+                  style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
+                >
+                  Login
+                </Link>
+              )}
+
               <Link
                 href="/cart"
                 className="hidden md:inline-flex relative items-center gap-2 text-sm text-white px-4 py-2 rounded-full whitespace-nowrap"
@@ -246,6 +278,33 @@ export default function Navbar() {
               >
                 Cart {totalItems > 0 && `(${totalItems})`}
               </Link>
+              {isCustomer ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="mt-2 flex items-center justify-center gap-2 text-sm text-[#E0B0A5]"
+                  >
+                    <User size={15} />
+                    My Account
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="flex items-center justify-center gap-2 text-sm text-white px-4 py-2 rounded-full cursor-pointer"
+                    style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
+                  >
+                    <LogOut size={15} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-sm text-white px-4 py-2 rounded-full text-center"
+                  style={{ background: "linear-gradient(90deg, #B8933E, #E0B0A5)" }}
+                >
+                  Login
+                </Link>
+              )}
             </div>
           </motion.div>
         </motion.div>

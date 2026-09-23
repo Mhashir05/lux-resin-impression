@@ -27,14 +27,19 @@ model Product {
 
 model Order {
   id            String   @id @default(uuid())
+  orderNumber   String   @unique
   customerName  String
   phone         String
   address       String
   items         Json
   totalAmount   Int
   paymentMethod String
-  status        String   @default("New")
-  createdAt     DateTime @default(now())
+  // "unpaid" for the manual methods (reconciled by hand); "paid" only after
+  // Safepay's server-side signature verification succeeds.
+  paymentStatus    String   @default("unpaid")
+  paymentReference String?
+  status           String   @default("New")
+  createdAt        DateTime @default(now())
 
   // Courier is booked externally (Bykea, Yango, etc.) by the admin — these
   // just record what was booked, not a live tracking integration.
@@ -43,6 +48,21 @@ model Order {
   riderPhone      String?
   trackingId      String?
   courierBookedAt DateTime?
+
+  // Nullable: accounts are being introduced after checkout already existed,
+  // so seed/legacy orders have no customer.
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  statusHistory OrderStatusHistory[]
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String
+  changedAt DateTime @default(now())
 }
 
 model AdminUser {
@@ -56,4 +76,17 @@ model SiteContent {
   key       String   @unique
   value     String   @db.Text
   updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id                   String    @id @default(uuid())
+  name                 String
+  email                String    @unique
+  phone                String
+  passwordHash         String
+  address              String
+  resetToken           String?
+  resetTokenExpiresAt  DateTime?
+  createdAt            DateTime  @default(now())
+  orders               Order[]
 }
