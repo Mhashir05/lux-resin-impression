@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
@@ -17,16 +17,26 @@ export default function CheckoutForm({
 }) {
   const { items, clearCart } = useCart();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [payment, setPayment] = useState("");
   const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState(initialPhone);
   const [address, setAddress] = useState(initialAddress);
   const [loading, setLoading] = useState(false);
+  const [safepayError, setSafepayError] = useState(
+    searchParams.get("safepayError") ||
+      (searchParams.get("safepayCancelled") ? "Payment was cancelled." : "")
+  );
+  const [redirectingToSafepay, setRedirectingToSafepay] = useState(false);
 
   const totalPrice = items.reduce((sum, item) => {
     const priceNum = Number(item.price.replace(/,/g, ""));
     return sum + priceNum * item.quantity;
   }, 0);
+
+  const cartPayload = () => ({
+    items: items.map((item) => ({ slug: item.slug, quantity: item.quantity })),
+  });
 
   const handlePlaceOrder = async () => {
     // Basic validation
@@ -71,6 +81,46 @@ export default function CheckoutForm({
       console.error(error);
       alert("Could not place order. Please check your connection.");
       setLoading(false);
+    }
+  };
+
+  const handlePayWithSafepay = async () => {
+    if (!name || !phone || !address) {
+      alert("Please fill in your name, phone and address.");
+      return;
+    }
+
+    setSafepayError("");
+    setRedirectingToSafepay(true);
+    try {
+      const res = await fetch("/api/payments/safepay/create-tracker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: name,
+          phone,
+          address,
+          ...cartPayload(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Full-page navigation — Safepay's hosted checkout is not embedded.
+        // The customer is redirected back to /checkout (cancelled/error) or
+        // /order-confirmed (success) by app/api/payments/safepay/return/route.ts.
+        window.location.href = data.checkoutUrl;
+      } else {
+        setSafepayError(
+          typeof data.error === "string" && data.error
+            ? data.error
+            : "Could not start online payment. Please try again."
+        );
+        setRedirectingToSafepay(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setSafepayError("Could not start online payment. Please check your connection.");
+      setRedirectingToSafepay(false);
     }
   };
 
@@ -181,7 +231,42 @@ export default function CheckoutForm({
                       </p>
                     </div>
                   </label>
+
+                  {/* Pay Online via Safepay */}
+                  <label className="flex items-start gap-3 border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-[#B8933E] transition-colors">
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="safepay"
+                      checked={payment === "safepay"}
+                      onChange={(e) => {
+                        setPayment(e.target.value);
+                        setSafepayError("");
+                      }}
+                      className="mt-1 accent-[#B8933E]"
+                    />
+                    <div>
+                      <p className="text-sm text-[#1D1D1F]">Pay Online (Card/Wallet)</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Pay securely now via card or wallet through Safepay.
+                      </p>
+                    </div>
+                  </label>
                 </div>
+
+                {/* Safepay checkout — shows only once this method is selected */}
+                {payment === "safepay" && (
+                  <div className="mt-4 border border-[#B8933E]/30 rounded-xl p-4 bg-[#FBF8F2] space-y-3">
+                    {safepayError && <p className="text-xs text-red-500">{safepayError}</p>}
+                    <button
+                      onClick={handlePayWithSafepay}
+                      disabled={redirectingToSafepay || loading}
+                      className="w-full bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {redirectingToSafepay ? "Redirecting to Safepay..." : "Continue to Safepay"}
+                    </button>
+                  </div>
+                )}
 
                 {/* Account details + upload — shows for both transfer options */}
                 {(payment === "advance" || payment === "transfer-on-delivery") && (
@@ -215,19 +300,21 @@ export default function CheckoutForm({
                 )}
               </div>
 
-              {/* Place order */}
-              <div className="space-y-3 pt-2">
-                <button
-                  onClick={handlePlaceOrder}
-                  disabled={loading}
-                  className="w-full bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Placing your order..." : "Place Order"}
-                </button>
-                <p className="text-xs text-gray-400 text-center">
-                  By placing your order, you agree to confirm payment as described above.
-                </p>
-              </div>
+              {/* Place order — Safepay has its own button above instead */}
+              {payment !== "safepay" && (
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={handlePlaceOrder}
+                    disabled={loading}
+                    className="w-full bg-[#1D1D1F] text-white text-sm py-3 rounded-full cursor-pointer transition-all duration-300 hover:bg-[#B8933E] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Placing your order..." : "Place Order"}
+                  </button>
+                  <p className="text-xs text-gray-400 text-center">
+                    By placing your order, you agree to confirm payment as described above.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right: order summary */}

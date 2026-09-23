@@ -37,7 +37,9 @@ model Order {
   // "unpaid" for the manual methods (reconciled by hand); "paid" only after
   // Safepay's server-side signature verification succeeds.
   paymentStatus    String   @default("unpaid")
-  paymentReference String?
+  // Safepay's tracker id once paid; unique so the same tracker can never be
+  // replayed into a second order, independent of Safepay's own enforcement.
+  paymentReference String?  @unique
   status           String   @default("New")
   createdAt        DateTime @default(now())
 
@@ -76,6 +78,26 @@ model SiteContent {
   key       String   @unique
   value     String   @db.Text
   updatedAt DateTime @updatedAt
+}
+
+// A tracker created server-side (via safepay.payments.create) for an
+// authenticated customer's cart, recording the exact amount it was created
+// for. The redirect-based checkout flow means the customer's browser leaves
+// this app entirely to pay on Safepay's hosted page, so there's no request
+// body to re-supply shipping/cart details when they're redirected back —
+// app/api/payments/safepay/return/route.ts reads them from here instead, and
+// re-prices from `items` to confirm nothing drifted since creation. Deleted
+// once consumed so the same tracker can't be used twice.
+model SafepayPendingTracker {
+  id           String   @id
+  amount       Int
+  customerId   String
+  customerName String
+  phone        String
+  address      String
+  // { [productSlug]: quantity } — same shape parseCartItems produces.
+  items        Json
+  createdAt    DateTime @default(now())
 }
 
 model Customer {
