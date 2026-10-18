@@ -1,8 +1,6 @@
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { hashPassword, MIN_PASSWORD_LENGTH, passwordTooShortError } from "@/lib/password";
 import { NextRequest, NextResponse } from "next/server";
-
-const MIN_PASSWORD_LENGTH = 8;
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -23,10 +21,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing token or password" }, { status: 400 });
   }
   if (password.length < MIN_PASSWORD_LENGTH) {
-    return NextResponse.json(
-      { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: passwordTooShortError() }, { status: 400 });
   }
 
   const customer = await prisma.customer.findFirst({ where: { resetToken: token } });
@@ -38,7 +33,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await hashPassword(password);
   await prisma.customer.update({
     where: { id: customer.id },
     data: { passwordHash, resetToken: null, resetTokenExpiresAt: null },

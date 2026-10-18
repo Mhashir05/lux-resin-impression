@@ -1,10 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { readString } from "@/lib/validation";
 import { NextRequest, NextResponse } from "next/server";
-
-function readString(value: unknown): string {
-  return typeof value === "string" ? value.trim() : "";
-}
 
 export async function PATCH(request: NextRequest) {
   const session = await auth();

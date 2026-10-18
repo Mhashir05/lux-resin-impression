@@ -6,9 +6,10 @@ import { Environment } from "@sfpy/node-sdk/dist/utils/constants";
 // Server-only: do not import this from a Client Component — v1Secret must
 // never reach the browser.
 //
-// SAFEPAY_PUBLIC_KEY is Safepay's "client" key — the same value the Safepay
-// Button widget uses in the browser (see components/SafepayButton.tsx), and
-// what the SDK calls `apiKey`.
+// SAFEPAY_PUBLIC_KEY is Safepay's "client" key — what the SDK calls
+// `apiKey`. The checkout flow is a server-built hosted-page redirect (see
+// app/api/payments/safepay/create-tracker/route.ts), so this key is only
+// ever used here, server-side — nothing browser-side needs it directly.
 // SAFEPAY_SECRET_KEY is Safepay's dashboard "secret key" — the SDK calls
 // this `v1Secret`; it signs the HMAC-SHA256 check in verify.signature() and
 // must stay server-side only.

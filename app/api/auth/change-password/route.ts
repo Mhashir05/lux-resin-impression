@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hashPassword, MIN_PASSWORD_LENGTH, passwordTooShortError } from "@/lib/password";
 import { NextRequest, NextResponse } from "next/server";
-
-const MIN_PASSWORD_LENGTH = 8;
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -32,10 +31,7 @@ export async function POST(request: NextRequest) {
     );
   }
   if (newPassword.length < MIN_PASSWORD_LENGTH) {
-    return NextResponse.json(
-      { error: `New password must be at least ${MIN_PASSWORD_LENGTH} characters` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: passwordTooShortError("New password") }, { status: 400 });
   }
 
   // Scoped to the logged-in session's own id.
@@ -49,7 +45,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
   }
 
-  const passwordHash = await bcrypt.hash(newPassword, 10);
+  const passwordHash = await hashPassword(newPassword);
   await prisma.customer.update({
     where: { id: session.user.id },
     data: { passwordHash },
